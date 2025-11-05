@@ -25,3 +25,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Ignore SQL dump and migration files (do not push database dumps)
+*.sql
