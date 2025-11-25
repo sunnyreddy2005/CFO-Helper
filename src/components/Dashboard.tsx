@@ -81,11 +81,16 @@ const Dashboard: React.FC = () => {
     const baseMultiplier = organizationData?.organizationType === 'startup' ? 1.2 :
       organizationData?.organizationType === 'event' ? 0.8 : 1.0;
 
+    // assumedQuantity represents the expected number of units (or transactions)
+    // for the period. We scale the quantity by `baseMultiplier` once.
     const assumedQuantity = Math.floor(100 * baseMultiplier);
     const baseSalary = organizationData?.organizationType === 'startup' ? 70000 : 60000;
     const baseFixedCost = organizationData?.organizationType === 'event' ? 200000 : 300000;
 
-    const revenue = inputs.productPrice * assumedQuantity * baseMultiplier;
+    // Revenue = productPrice * assumedQuantity
+    // Note: baseMultiplier was already applied to assumedQuantity, so we avoid
+    // applying it again here (previous implementation multiplied by it twice).
+    const revenue = inputs.productPrice * assumedQuantity;
     const expenses = baseFixedCost + (baseSalary * inputs.employees) + inputs.marketingSpend + inputs.miscExpenses;
     const netProfit = revenue - expenses;
     const runway = expenses > 0 ? Math.floor(inputs.currentFunds / expenses) : Infinity;
@@ -149,8 +154,8 @@ const Dashboard: React.FC = () => {
     const assumedQuantity = Math.floor(100 * baseMultiplier);
     const baseSalary = organizationData?.organizationType === 'startup' ? 70000 : 60000;
     const baseFixedCost = organizationData?.organizationType === 'event' ? 200000 : 300000;
-
-    const revenue = inputs.productPrice * assumedQuantity * baseMultiplier;
+    // Use the same revenue rule as in runSimulation (do NOT double-scale)
+    const revenue = inputs.productPrice * assumedQuantity;
     const expenses = baseFixedCost + (baseSalary * inputs.employees) + inputs.marketingSpend + inputs.miscExpenses;
     const netProfit = revenue - expenses;
     const currentMonthData = mockData[mockData.length - 1];
